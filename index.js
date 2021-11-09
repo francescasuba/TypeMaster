@@ -52,3 +52,4 @@ levelOneBtn.addEventListener("click", function (event) {
     event.preventDefault();
     fetchWords().then(words => console.log(words))
 });
+
