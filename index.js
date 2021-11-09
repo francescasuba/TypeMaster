@@ -9,17 +9,9 @@ var temp = document.querySelector(".time");
     var seconds = 60;
 
 
-const apiURL = "https://random-word-api.herokuapp.com/home/word?number=200/?swear=1";
+const apiURL = "https://random-word-api.herokuapp.com/word?number=200&swear=1";
 
-function httpGet(apiURL)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", apiURL, false ); // false for synchronous request
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-}
-
-/* function fetchWords() {
+function fetchWords() {
     return fetch(apiURL)
         .then( response => response.json())
 }
@@ -30,7 +22,7 @@ async function getWords(){
     for (var i in messages){
         wordsArray.push(messages[i]);
     }
-} */
+}
 
 function timer(){
     points = 0;
@@ -66,5 +58,6 @@ function wordSpitter() {
 
 button.addEventListener("click", function(buttonClickEvent) {
     buttonClickEvent.preventDefault();
-    httpGet();
+    fetchWords();
+    getWords();
   });
