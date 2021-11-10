@@ -1,5 +1,5 @@
 var temp = document.querySelector(".time");
-var words = document.getElementById(".words");
+var words = document.querySelector(".words");
 var levelOneBtn = document.getElementById("level-one-btn");
 var scoreDiv = document.querySelector(".score");
 var timerDiv = document.querySelector(".time");
@@ -13,7 +13,21 @@ const apiURL = "https://random-word-api.herokuapp.com/word?number=200&swear=1";
 /** @returns {Promise<string[]>} */
 async function fetchWords() {
     const res = await fetch(apiURL)
-    return await res.json()
+    return await res.json();
+}
+
+async function wordSpitter() {
+    var array = await fetchWords();
+    words.innerHTML = "";
+    var random = Math.floor(Math.random() * 200) + 1;
+    var wordArray = array[random];
+    for (var i = 0; i < wordArray.length; i++) { //building the words with spans around the letters
+        var span = document.createElement("span");
+        span.classList.add("span");
+        /*span.innerHTML = wordArray[i];*/
+        words.appendChild(span);
+    }
+    spans = document.querySelectorAll(".span");
 }
 
 function timer() {
@@ -35,21 +49,12 @@ function timer() {
     }, 1000);
 }
 
-function wordSpitter() {
-    words.innerHTML = "";
-    var random = Math.floor(Math.random() * (1943 - 0 + 1)) + 0;
-    var wordArray = list[random].split("");
-    for (var i = 0; i < wordArray.length; i++) { //building the words with spans around the letters
-        var span = document.createElement("span");
-        span.classList.add("span");
-        span.innerHTML = wordArray[i];
-        words.appendChild(span);
-    }
-    spans = document.querySelectorAll(".span");
-}
-
 levelOneBtn.addEventListener("click", function (event) {
     event.preventDefault();
+    timer();
     fetchWords().then(words => console.log(words))
+    wordSpitter();
 });
+
+
 
