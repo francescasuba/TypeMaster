@@ -1,11 +1,11 @@
 var temp = document.querySelector(".time");
 var words = document.querySelector(".words");
-var levelOneStartBtn = document.getElementById("level-one-start-btn");
+var levelTwoStartBtn = document.getElementById("level-two-start-btn");
 var scoreDiv = document.querySelector(".score");
 var timerDiv = document.querySelector(".time");
 var points = 0;
 var seconds = 60;
-var levelOneList = [];
+var levelTwoList = [];
 const wordInputElement = document.getElementById("wordInput")
 
 const apiURL = "https://random-word-api.herokuapp.com/word?number=1000&swear=1";
@@ -16,17 +16,17 @@ async function fetchWords() {
     return await res.json();
 }
 
-async function levelOneWordSpitter() {
+async function levelTwoWordSpitter() {
     const wordList = await fetchWords();
     words.innerHTML = "";
     wordList.forEach(function(word){
-        if (word.length <= 5)
+        if (word.length >= 5 && word.length <= 10)
         {
-            levelOneList.push(word);
+            levelTwoList.push(word);
         }
     });
-    var random = Math.floor(Math.random() * levelOneList.length) + 1;
-    var pickedWord = levelOneList[random];
+    var random = Math.floor(Math.random() * levelTwoList.length) + 1;
+    var pickedWord = levelTwoList[random];
     pickedWord.split('').forEach(character => {
         const characterSpan = document.createElement('span');
         characterSpan.innerText = character;
@@ -38,28 +38,28 @@ async function levelOneWordSpitter() {
 function timer() {
     points = 0;
     var timer = setInterval(function () {
-        levelOneStartBtn.disabled = true;
+        levelTwoStartBtn.disabled = true;
         seconds--;
         temp.innerHTML = seconds;
         if (seconds === 0) {
             alert("Game over! Your score is " + points);
             scoreDiv.innerHTML = "0";
             words.innerHTML = "";
-            levelOneStartBtn.disabled = false;
+            levelTwoStartBtn.disabled = false;
             clearInterval(timer);
             seconds = 60;
             timerDiv.innerHTML = "60";
-            levelOneStartBtn.disabled = false;
+            levelTwoStartBtn.disabled = false;
             wordInputElement.value = null;
         }
     }, 1000);
 }
 
-levelOneStartBtn.addEventListener("click", function (event) {
+levelTwoStartBtn.addEventListener("click", function (event) {
     event.preventDefault();
     timer();
     fetchWords().then(words => console.log(words))
-    levelOneWordSpitter();
+    levelTwoWordSpitter();
 });
 
 wordInputElement.addEventListener('input', () => {
@@ -86,6 +86,6 @@ wordInputElement.addEventListener('input', () => {
   if (correct) {
         points++;
         scoreDiv.innerHTML = points;
-        levelOneWordSpitter();
+        levelTwoWordSpitter();
   }
 })
