@@ -1,35 +1,19 @@
 var temp = document.querySelector(".time");
 var words = document.querySelector(".words");
-var startBtn = document.getElementById("start-btn");
 var levelOneStartBtn = document.getElementById("level-one-start-btn");
 var scoreDiv = document.querySelector(".score");
 var timerDiv = document.querySelector(".time");
 var points = 0;
-var spans;
-var typed;
 var seconds = 60;
 var levelOneList = [];
 const wordInputElement = document.getElementById("wordInput")
 
-const apiURL = "https://random-word-api.herokuapp.com/word?number=200&swear=1";
+const apiURL = "https://random-word-api.herokuapp.com/word?number=1000&swear=1";
 
 /** @returns {Promise<string[]>} */
 async function fetchWords() {
     const res = await fetch(apiURL)
     return await res.json();
-}
-
-async function wordSpitter() {
-    const wordList = await fetchWords();
-    words.innerHTML = "";
-    var random = Math.floor(Math.random() * 200) + 1;
-    var word = wordList[random];
-    word.split('').forEach(character => {
-        const characterSpan = document.createElement('span');
-        characterSpan.innerText = character;
-        words.appendChild(characterSpan);
-    })
-        wordInputElement.value = null;
 }
 
 async function levelOneWordSpitter() {
@@ -55,33 +39,25 @@ async function levelOneWordSpitter() {
 function timer() {
     points = 0;
     var timer = setInterval(function () {
-        //startBtn.disabled = true;
+        levelOneStartBtn.disabled = true;
         seconds--;
         temp.innerHTML = seconds;
         if (seconds === 0) {
             alert("Game over! Your score is " + points);
             scoreDiv.innerHTML = "0";
             words.innerHTML = "";
-            //startBtn.disabled = false;
+            levelOneStartBtn.disabled = false;
             clearInterval(timer);
             seconds = 60;
             timerDiv.innerHTML = "60";
-            //startBtn.disabled = false;
+            levelOneStartBtn.disabled = false;
+            wordInputElement.value = null;
         }
     }, 1000);
 }
 
-/* startBtn.addEventListener("click", function (event) {
-    event.preventDefault();
-    // document.getElementById("start-btn").className = "nes-btn is-success";
-    timer();
-    fetchWords().then(words => console.log(words))
-    wordSpitter();
-}); */
-
 levelOneStartBtn.addEventListener("click", function (event) {
     event.preventDefault();
-    // document.getElementById("start-btn").className = "nes-btn is-success";
     timer();
     fetchWords().then(words => console.log(words))
     levelOneWordSpitter();
@@ -111,6 +87,6 @@ wordInputElement.addEventListener('input', () => {
   if (correct) {
         points++;
         scoreDiv.innerHTML = points;
-        wordSpitter();
+        levelOneWordSpitter();
   }
 })
