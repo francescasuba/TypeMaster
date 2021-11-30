@@ -10,12 +10,13 @@ const wordInputElement = document.getElementById("wordInput")
 
 const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
 const MAX_HIGH_SCORES = 5;
-const highScoresList = document.getElementById('highScoresList');
+const highScoresListLevelOne = document.getElementById('highScoresListLevelOne');
 
 function saveHighScore() {
     const score = {
         score: points,
-        name: prompt('You got a highscore! Enter name:')
+        name: prompt('You got a highscore! Enter name (will only show first 5 characters):'),
+        level: "Level 1"
     };
     highScores.push(score);
     highScores.sort((a,b) => b.score - a.score)
@@ -24,63 +25,12 @@ function saveHighScore() {
 }
 
 function displayHighScores(){
-    highScoresList.innerHTML = highScores
+    highScoresListLevelOne.innerHTML = highScores
         .map( score => {
-        return `<li class="high-score">${score.name} - ${score.score}</li>`;
+        return `<li class="high-score">${score.name} - ${score.score} (${score.level})</li>`;
         })
         .join("");
 }
-/* const NO_OF_HIGH_SCORES = 5;
-const HIGH_SCORES = 'highScores';
-const highScoreString = localStorage.getItem(HIGH_SCORES);
-const highScores = JSON.parse(highScoreString) ?? [];
-const lowestScore = highScores[NO_OF_HIGH_SCORES - 1]?.score ?? 0;
- */
-/* function saveHighScore(points, highScores) {
-    const name = prompt('You got a highscore! Enter name:');
-    const newScore = { points, name };
-    
-    // 1. Add to list
-    highScores.push(newScore);
-  
-    // 2. Sort the list
-    highScores.sort((a, b) => b.points - a.points);
-    
-    // 3. Select new list
-    highScores.splice(NO_OF_HIGH_SCORES);
-    
-    // 4. Save to local storage
-    localStorage.setItem(HIGH_SCORES, JSON.stringify(highScores));
-}; */
-
-/* function showHighScores() {
-    const highScoreList = document.getElementById(HIGH_SCORES);
-    // const highScores = JSON.parse(localStorage.getItem(HIGH_SCORES)) ?? [];
-    var displayList = document.querySelector('HIGH_SCORES');
-    displayList.innerHTML = "";
-    JSON.parse(localStorage.getItem(HIGH_SCORES)) ?? [].forEach(points => {
-        displayList.innerHTML =
-        `<ul>
-            <li>${points.points} - ${points.name}</li>
-        </ul>`
-        
-    });
-    console.log(localStorage.getItem(points));
-    
-    highScoreList.innerHTML = highScores
-      .map((points) => `<li>${points.points} - ${points.name}`)
-      .join('');
-} */
-
-/* function checkHighScore(points) {
-    const highScores = JSON.parse(localStorage.getItem(HIGH_SCORES)) ?? [];
-    const lowestScore = highScores[NO_OF_HIGH_SCORES - 1]?.points ?? 0;
-    
-    if (points > lowestScore) {
-      saveHighScore(points, highScores);
-      showHighScores();
-    }
-} */
 
 const apiURL = "https://random-word-api.herokuapp.com/word?number=1000&swear=1";
 
@@ -117,9 +67,10 @@ function timer() {
         temp.innerHTML = seconds;
         if (seconds === 0) {
             alert("Game over! Your score is " + points);
-            // checkHighScore(points);
             scoreDiv.innerHTML = "0";
             words.innerHTML = "";
+            saveHighScore();
+            displayHighScores();
             levelOneStartBtn.disabled = false;
             clearInterval(timer);
             seconds = 60;
@@ -129,6 +80,8 @@ function timer() {
         }
     }, 1000);
 }
+
+window.onload = displayHighScores();
 
 levelOneStartBtn.addEventListener("click", function (event) {
     event.preventDefault();

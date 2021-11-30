@@ -8,6 +8,30 @@ var seconds = 60;
 var levelThreeList = [];
 const wordInputElement = document.getElementById("wordInput");
 
+const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+const MAX_HIGH_SCORES = 5;
+const highScoresListLevelThree = document.getElementById('highScoresListLevelThree');
+
+function saveHighScore() {
+    const score = {
+        score: points,
+        name: prompt('You got a highscore! Enter name (will only show first 5 characters):'),
+        level: "Level 3"
+    };
+    highScores.push(score);
+    highScores.sort((a,b) => b.score - a.score)
+    highScores.splice(5);
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+}
+
+function displayHighScores(){
+    highScoresListLevelThree.innerHTML = highScores
+        .map( score => {
+        return `<li class="high-score">${score.name} - ${score.score} (${score.level})</li>`;
+        })
+        .join("");
+}
+
 const apiURL = "https://random-word-api.herokuapp.com/word?number=1000&swear=1";
 
 /** @returns {Promise<string[]>} */
@@ -46,6 +70,8 @@ function timer() {
             alert("Game over! Your score is " + points);
             scoreDiv.innerHTML = "0";
             words.innerHTML = "";
+            saveHighScore();
+            displayHighScores();
             levelThreeStartBtn.disabled = false;
             clearInterval(timer);
             seconds = 60;
@@ -57,6 +83,8 @@ function timer() {
         }
     }, 1000);
 }
+
+window.onload = displayHighScores();
 
 levelThreeStartBtn.addEventListener("click", function (event) {
     event.preventDefault();
